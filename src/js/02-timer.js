@@ -21,17 +21,19 @@ const fr = flatpickr("#datetime-picker", {
     onClose(selectedDates) {
         deadline = selectedDates[0].getTime();
         chekDate(deadline, date)
-        btnStart.disabled = false;
     }
 });
 
 btnStart.addEventListener('click', startTimer)
 
 function chekDate(data1, data2) { 
-    if (data1 < data2){
-            window.alert("Please choose a date in the future")
-            btnStart.disabled = true
-            return
+    if (data1 < data2) {
+        btnStart.disabled = true
+        window.alert("Please choose a date in the future")
+        clearInterval(timerId)
+        return
+    } else { 
+        btnStart.disabled = false;
     };
 }
 
