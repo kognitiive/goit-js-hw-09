@@ -3,6 +3,12 @@ import "flatpickr/dist/flatpickr.min.css";
 
 let deadline = 0;
 let timerId = null;
+const refs = {
+    days: document.querySelector('span[data-days]'),
+    hours: document.querySelector('span[data-hours]'),
+    minutes: document.querySelector('span[data-minutes]'),
+    seconds: document.querySelector('span[data-seconds]'),
+}
 const date = new Date().getTime();
 const btnStart = document.querySelector('button[data-start]')
 btnStart.disabled = true
@@ -14,17 +20,44 @@ const fr = flatpickr("#datetime-picker", {
     minuteIncrement: 1,
     onClose(selectedDates) {
         deadline = selectedDates[0].getTime();
-        console.log(deadline)
-        if (deadline <= date){
+        chekDate(deadline, date)
+        btnStart.disabled = false;
+    }
+});
+
+btnStart.addEventListener('click', startTimer)
+
+function chekDate(data1, data2) { 
+    if (data1 < data2){
             window.alert("Please choose a date in the future")
             btnStart.disabled = true
             return
-        };
-        btnStart.disabled = false;
-        const time = convertMs(deadline - date);
-        console.log(time)
+    };
+}
+
+function addPadStartToObj(time) { 
+    return {
+        days: addLeadingZero(time.days.toString()),
+        hours: addLeadingZero(time.hours.toString()),
+        minutes: addLeadingZero(time.minutes.toString()),
+        seconds: addLeadingZero(time.seconds.toString()),
     }
-});
+}
+
+function updateMarkup({  days, hours, minutes, seconds }) { 
+    refs.days.textContent = days;
+    refs.hours.textContent = hours;
+    refs.minutes.textContent = minutes;
+    refs.seconds.textContent = seconds;
+}
+
+function startTimer() {
+    timerId = setInterval(() => { 
+        let time = convertMs(deadline - new Date().getTime());
+        let padTime = addPadStartToObj(time)
+        updateMarkup(padTime)
+    }, 1000)
+} 
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -43,4 +76,8 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
+}
+
+function addLeadingZero(value) {
+    return value.toString().padStart(2, '0')
 }
