@@ -1,5 +1,6 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 let deadline = 0;
 let timerId = null;
@@ -29,7 +30,7 @@ btnStart.addEventListener('click', startTimer)
 function chekDate(data1, data2) { 
     if (data1 < data2) {
         btnStart.disabled = true
-        window.alert("Please choose a date in the future")
+        Notify.warning("Please choose a date in the future")
         clearInterval(timerId)
         return
     } else { 
