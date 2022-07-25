@@ -11,6 +11,7 @@ const refs = {
     seconds: document.querySelector('span[data-seconds]'),
 }
 const date = new Date().getTime();
+const input = document.querySelector('#datetime-picker')
 const btnStart = document.querySelector('button[data-start]')
 btnStart.disabled = true
 
@@ -55,11 +56,18 @@ function updateMarkup({  days, hours, minutes, seconds }) {
 }
 
 function startTimer() {
-    timerId = setInterval(() => { 
+
+    timerId = setInterval(() => {
+        if (deadline - new Date().getTime() < 1000) {
+        clearInterval(timerId)
+    }
         let time = convertMs(deadline - new Date().getTime());
         let padTime = addPadStartToObj(time)
         updateMarkup(padTime)
     }, 1000)
+    btnStart.disabled = true;
+    input.disabled = true;
+
 } 
 
 function convertMs(ms) {
